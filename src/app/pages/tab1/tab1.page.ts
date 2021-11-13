@@ -12,14 +12,28 @@ export class Tab1Page implements OnInit{
 
   noticias: Article[]=[];
 
-  constructor(private noticiasServisce: NoticiasService) {}
+  constructor(private noticiasService: NoticiasService) {}
   ngOnInit(){
-   this.noticiasServisce.getToHeadLines()
-   .subscribe(resp =>{
-     console.log('noticias',resp.articles);
-     this.noticias.push(...resp.articles);
-
-   });
-
- }
+    this.cargarNoticias();
+  }
+   loadData(event){
+     this.cargarNoticias(event);
+   }
+   cargarNoticias(event?){
+    this.noticiasService.getToHeadLines()
+    .subscribe(resp =>{
+      console.log('noticias',resp.articles);
+      
+      if(resp.articles.length === 0){
+         event.target.disable=true;
+         return;
+      }
+      this.noticias.push(...resp.articles);
+ 
+      if(event){
+        event.targe.complete();
+      }
+    });
+   }
 }
+

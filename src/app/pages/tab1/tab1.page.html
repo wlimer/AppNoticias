@@ -7,7 +7,10 @@
 </ion-header>
 
 <ion-content>
-  <app-noticias [noticias]="noticias">  </app-noticias>
-    
+    <app-noticias [noticias]="noticias"> </app-noticias>
+    <ion-infinite-scroll threshold="150px" position="bottom" (ionInfinite)="loadData($event)">
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="cargando noticias...">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
 </ion-content>
