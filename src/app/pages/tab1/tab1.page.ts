@@ -23,14 +23,14 @@ export class Tab1Page implements OnInit{
     this.noticiasService.getToHeadLines()
     .subscribe(resp =>{
       console.log('noticias',resp.articles);
-      
-      if(resp.articles.length === 0){
+
+    if(resp.articles.length === 0){
          event.target.disable=true;
          return;
       }
       this.noticias.push(...resp.articles);
- 
-      if(event){
+
+    if(event){
         event.targe.complete();
       }
     });
