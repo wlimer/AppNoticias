@@ -24,6 +24,9 @@ export class Tab2Page implements OnInit{
 
   this.cargarNoticias(this.categorias[0]);
  }
+//  loadData(event){
+//   this.cargarNoticias(event);
+// }
   cambioCategoria(event){
    this.noticias=[];
    this.cargarNoticias(event.detail.value);
@@ -32,7 +35,17 @@ export class Tab2Page implements OnInit{
   cargarNoticias(categoria: string){
    this.noticiasService.getToHeadLinesCategoria(categoria)
     .subscribe(resp =>{
-      this.noticias.push(...resp.articles);
+
+  //  if(resp.articles.length === 0){
+  //       event.target.disable=true;
+  //       return;
+  //   }
+     this.noticias.push(...resp.articles);
+    // if(event){
+    //     event.targe.complete();
+    //   }
+
+
 
   });
 
