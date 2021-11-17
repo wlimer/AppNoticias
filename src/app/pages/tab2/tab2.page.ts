@@ -10,7 +10,7 @@ import { NoticiasService } from '../../services/noticias.service';
 export class Tab2Page implements OnInit{
 
   @ViewChild(IonSegment) segmento=IonSegment;
-  
+
   categorias=['business','entertainment','general','health','science','sports','technology'];
   noticias: Article[] = [];
 
@@ -27,8 +27,8 @@ export class Tab2Page implements OnInit{
   cambioCategoria(event){
    this.noticias=[];
    this.cargarNoticias(event.detail.value);
-    
-}
+
+  }
   cargarNoticias(categoria: string){
    this.noticiasService.getToHeadLinesCategoria(categoria)
     .subscribe(resp =>{

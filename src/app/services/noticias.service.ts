@@ -8,7 +8,10 @@ const apiKey = environment.apiKey;
 const apiUrl = environment.apiUrl;
 
 const headers= new HttpHeaders({
+ // eslint-disable-next-line @typescript-eslint/member-ordering
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   'X-Api-Key': apiKey
+
 });
 
 
@@ -22,21 +25,22 @@ export class NoticiasService {
 
   constructor(private http: HttpClient) { }
 
-  
-  private ejecutarQuery<T>(query: string){
+
+private ejecutarQuery<T>(query: string){
     query = apiUrl + query;
-    console.log('imprimiendo query!!!!!!!!!!!!!!!!',query)
+    console.log('imprimiendo query!!!!!!!!!!!!!!!!',query);
     return this.http.get<T>(query,{headers});
 
   }
 
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   getToHeadLines(){
    this.headLinesPages++;
    return this.ejecutarQuery<RespuestaTopHeadLines>(`/top-headlines?country=co&page=${this.headLinesPages}`);
-      }
-
-  getToHeadLinesCategoria(categoria:string){
+  }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  getToHeadLinesCategoria(categoria: string){
     return this.ejecutarQuery<RespuestaTopHeadLines>(`/top-headlines?country=co&category=${categoria}`) ;
   }
 
