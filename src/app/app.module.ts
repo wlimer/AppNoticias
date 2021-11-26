@@ -19,4 +19,3 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 /*eslint no-trailing-spaces: ["error", { "ignoreComments": true }]*/
 })
 export class AppModule {}
-git
