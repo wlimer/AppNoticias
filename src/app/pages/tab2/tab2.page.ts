@@ -9,7 +9,9 @@ import { NoticiasService } from '../../services/noticias.service';
 })
 export class Tab2Page implements OnInit{
 
-  @ViewChild(IonSegment) segmento=IonSegment;
+
+
+  @ViewChild(IonSegment,{static: true}) segmento: IonSegment;
 
   categorias=['business','entertainment','general','health','science','sports','technology'];
   noticias: Article[] = [];
@@ -32,23 +34,25 @@ export class Tab2Page implements OnInit{
    this.cargarNoticias(event.detail.value);
 
   }
-  cargarNoticias(categoria: string){
+  cargarNoticias(categoria: string,event?){
    this.noticiasService.getToHeadLinesCategoria(categoria)
     .subscribe(resp =>{
+      this.noticias.push(...resp.articles);
+      if(event){
+        event.targe.complete();
+      }
 
-  //  if(resp.articles.length === 0){
-  //       event.target.disable=true;
-  //       return;
-  //   }
-     this.noticias.push(...resp.articles);
-    // if(event){
-    //     event.targe.complete();
-    //   }
+
+
 
 
 
   });
+}
+ loadData(event){
+  this.cargarNoticias(this.segmento.value,event);
 
 
  }
+
 }
