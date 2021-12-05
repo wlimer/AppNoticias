@@ -34,7 +34,7 @@ const routes = [
             },
             {
                 path: 'tab3',
-                loadChildren: () => __webpack_require__.e(/*! import() */ "src_app_pages_tab3_tab3_module_ts").then(__webpack_require__.bind(__webpack_require__, /*! ../tab3/tab3.module */ 2090)).then(m => m.Tab3PageModule)
+                loadChildren: () => Promise.all(/*! import() */[__webpack_require__.e("common"), __webpack_require__.e("src_app_pages_tab3_tab3_module_ts")]).then(__webpack_require__.bind(__webpack_require__, /*! ../tab3/tab3.module */ 2090)).then(m => m.Tab3PageModule)
             },
             {
                 path: '',

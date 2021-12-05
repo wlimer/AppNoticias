@@ -132,7 +132,7 @@ let Tab2Page = class Tab2Page {
             .subscribe(resp => {
             this.noticias.push(...resp.articles);
             if (event) {
-                event.targe.complete();
+                event.target.complete();
             }
         });
     }
@@ -184,7 +184,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("<ion-header class=\"no-ion-bo\">\r\n    <ion-toolbar>\r\n        <ion-title>\r\n            Encabezados\r\n        </ion-title>\r\n    </ion-toolbar>\r\n</ion-header>\r\n\r\n<ion-segment scrollable mode=\"md\" (ionChange)=\"cambioCategoria($event)\">\r\n    <ion-segment-button mode=\"md\" *ngFor=\"let categoria of categorias\" [value]=\"categoria\">\r\n        <ion-label text-capitalize>{{categoria}}</ion-label>\r\n    </ion-segment-button>\r\n\r\n</ion-segment>\r\n\r\n<ion-content>\r\n    <app-noticias [noticias]=\"noticias\"></app-noticias>\r\n    <ion-infinite-scroll threshold=\"150px\" position=\"bottom\" (ionInfinite)=\"loadData($event)\">\r\n        <ion-infinite-scroll-content loadingSpinner=\"bubbles\" loadingText=\"cargando noticias...\">\r\n        </ion-infinite-scroll-content>\r\n    </ion-infinite-scroll>\r\n\r\n</ion-content>");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("<ion-header class=\"no-ion-bo\">\r\n    <ion-toolbar>\r\n        <ion-title>\r\n            Encabezados\r\n        </ion-title>\r\n    </ion-toolbar>\r\n</ion-header>\r\n\r\n<ion-segment scrollable \r\n             mode=\"md\"\r\n            (ionChange)=\"cambioCategoria($event)\">\r\n    <ion-segment-button mode=\"md\"\r\n                       *ngFor=\"let categoria of categorias\" \r\n                       [value]=\"categoria\">\r\n        <ion-label text-capitalize>{{categoria}}</ion-label>\r\n    </ion-segment-button>\r\n\r\n</ion-segment>\r\n\r\n<ion-content>\r\n    <app-noticias [noticias]=\"noticias\"></app-noticias>\r\n    <ion-infinite-scroll threshold=\"150px\" position=\"bottom\" (ionInfinite)=\"loadData($event)\">\r\n        <ion-infinite-scroll-content loadingSpinner=\"bubbles\" loadingText=\"cargando noticias...\">\r\n        </ion-infinite-scroll-content>\r\n    </ion-infinite-scroll>\r\n\r\n</ion-content>");
 
 /***/ })
 

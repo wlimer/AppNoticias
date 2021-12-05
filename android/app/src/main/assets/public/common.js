@@ -494,13 +494,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "NoticiaComponent": () => (/* binding */ NoticiaComponent)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! tslib */ 4762);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! tslib */ 4762);
 /* harmony import */ var _raw_loader_noticia_component_html__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !raw-loader!./noticia.component.html */ 6510);
 /* harmony import */ var _noticia_component_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./noticia.component.scss */ 7560);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/core */ 7716);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/core */ 7716);
 /* harmony import */ var _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic-native/in-app-browser/ngx */ 3760);
-/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ionic/angular */ 476);
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @ionic/angular */ 476);
 /* harmony import */ var _ionic_native_social_sharing_ngx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @ionic-native/social-sharing/ngx */ 4276);
+/* harmony import */ var _services_storage_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/storage.service */ 1188);
+
 
 
 
@@ -509,17 +511,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let NoticiaComponent = class NoticiaComponent {
-    constructor(iab, actionSheetCtrl, socialSharing) {
+    constructor(iab, actionSheetCtrl, socialSharing, storageServices) {
         this.iab = iab;
         this.actionSheetCtrl = actionSheetCtrl;
         this.socialSharing = socialSharing;
+        this.storageServices = storageServices;
     }
     ngOnInit() { }
-    lanzarNoticias() {
+    lanzarNoticia() {
         const browser = this.iab.create(this.noticia.url, '_system');
     }
-    lanzaMenu() {
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_4__.__awaiter)(this, void 0, void 0, function* () {
+    lanzarMenu() {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_5__.__awaiter)(this, void 0, void 0, function* () {
+            const noticiaEnFavoritos = this.storageServices.noticiaEnFavoritos(this.noticia);
             const actionSheet = yield this.actionSheetCtrl.create({
                 buttons: [{
                         text: 'Compartir Noticias',
@@ -528,10 +532,10 @@ let NoticiaComponent = class NoticiaComponent {
                             this.socialSharing.share(this.noticia.title, this.noticia.source.name, '', this.noticia.url);
                         }
                     }, {
-                        text: 'Agregar Favorito',
-                        icon: 'star-outline',
+                        text: noticiaEnFavoritos ? 'remover de favoritos' : 'Agregar a Favorito',
+                        icon: noticiaEnFavoritos ? 'star' : 'star-outline',
                         handler: () => {
-                            console.log('Favorite clicked');
+                            this.storageServices.saveRemoveNoticia(this.noticia);
                         }
                     }, {
                         text: 'Cancel',
@@ -548,15 +552,16 @@ let NoticiaComponent = class NoticiaComponent {
 };
 NoticiaComponent.ctorParameters = () => [
     { type: _ionic_native_in_app_browser_ngx__WEBPACK_IMPORTED_MODULE_2__.InAppBrowser },
-    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_5__.ActionSheetController },
-    { type: _ionic_native_social_sharing_ngx__WEBPACK_IMPORTED_MODULE_3__.SocialSharing }
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_6__.ActionSheetController },
+    { type: _ionic_native_social_sharing_ngx__WEBPACK_IMPORTED_MODULE_3__.SocialSharing },
+    { type: _services_storage_service__WEBPACK_IMPORTED_MODULE_4__.StorageService }
 ];
 NoticiaComponent.propDecorators = {
-    noticia: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_6__.Input }],
-    indice: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_6__.Input }]
+    noticia: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_7__.Input }],
+    indice: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_7__.Input }]
 };
-NoticiaComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_4__.__decorate)([
-    (0,_angular_core__WEBPACK_IMPORTED_MODULE_6__.Component)({
+NoticiaComponent = (0,tslib__WEBPACK_IMPORTED_MODULE_5__.__decorate)([
+    (0,_angular_core__WEBPACK_IMPORTED_MODULE_7__.Component)({
         selector: 'app-noticia',
         template: _raw_loader_noticia_component_html__WEBPACK_IMPORTED_MODULE_0__.default,
         styles: [_noticia_component_scss__WEBPACK_IMPORTED_MODULE_1__.default]
@@ -677,6 +682,79 @@ NoticiasService = (0,tslib__WEBPACK_IMPORTED_MODULE_2__.__decorate)([
 
 /***/ }),
 
+/***/ 1188:
+/*!*********************************************!*\
+  !*** ./src/app/services/storage.service.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "StorageService": () => (/* binding */ StorageService)
+/* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 4762);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 7716);
+/* harmony import */ var _ionic_storage_angular__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @ionic/storage-angular */ 1628);
+
+
+
+let StorageService = class StorageService {
+    constructor(storage) {
+        this.storage = storage;
+        this._storage = null;
+        this._localNoticias = [];
+        this.init();
+    }
+    get getLocalNoticias() {
+        return [...this._localNoticias];
+    }
+    init() {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function* () {
+            // If using, define drivers here: await this.storage.defineDriver(/*...*/);
+            const storage = yield this.storage.create();
+            this._storage = storage;
+        });
+    }
+    saveRemoveNoticia(noticia) {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function* () {
+            const existe = this._localNoticias.find(localNoticia => localNoticia.title === noticia.title);
+            if (existe) {
+                this._localNoticias = this._localNoticias.filter(localNoticia => localNoticia.title !== noticia.title);
+            }
+            else {
+                this._localNoticias = [noticia, ...this._localNoticias];
+            }
+            this._storage.set('noticias', this._localNoticias);
+        });
+    }
+    cargarFavoritos() {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function* () {
+            try {
+                const noticias = yield this._storage.get('noticias');
+            }
+            catch (error) {
+                console.log(error);
+            }
+        });
+    }
+    noticiaEnFavoritos(noticia) {
+        return !!this._localNoticias.find(localStorage => localStorage.title === noticia.title);
+    }
+};
+StorageService.ctorParameters = () => [
+    { type: _ionic_storage_angular__WEBPACK_IMPORTED_MODULE_1__.Storage }
+];
+StorageService = (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__decorate)([
+    (0,_angular_core__WEBPACK_IMPORTED_MODULE_2__.Injectable)({
+        providedIn: 'root'
+    })
+], StorageService);
+
+
+
+/***/ }),
+
 /***/ 7560:
 /*!***********************************************************!*\
   !*** ./src/app/components/noticia/noticia.component.scss ***!
@@ -688,7 +766,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".noticias-more {\n  font-size: 25px !important;\n  position: absolute;\n  right: -10px;\n  top: -10px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm5vdGljaWEuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSwwQkFBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLFVBQUE7QUFDSiIsImZpbGUiOiJub3RpY2lhLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5vdGljaWFzLW1vcmUge1xyXG4gICAgZm9udC1zaXplOiAyNXB4ICFpbXBvcnRhbnQ7XHJcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICByaWdodDogLTEwcHg7XHJcbiAgICB0b3A6IC0xMHB4O1xyXG59Il19 */");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (".noticias-more {\n  font-size: 25px !important;\n  position: absolute;\n  right: -10px;\n  top: -18px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm5vdGljaWEuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSwwQkFBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtFQUNBLFVBQUE7QUFDSiIsImZpbGUiOiJub3RpY2lhLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5vdGljaWFzLW1vcmUge1xyXG4gICAgZm9udC1zaXplOiAyNXB4ICFpbXBvcnRhbnQ7XHJcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgICByaWdodDogLTEwcHg7XHJcbiAgICB0b3A6IC0xOHB4O1xyXG59Il19 */");
 
 /***/ }),
 
@@ -718,7 +796,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("<ion-card>\r\n    <ion-card-header>\r\n        <ion-card-subtitle>\r\n            <span class=\"text-primary\">{{indice + 1}}. </span>\r\n            <div class=\"noticias-more\">\r\n                <ion-button (click)=\"lanzaMenu()\" fill \"clear\">\r\n                    <ion-icon slot=\"icon-only\" name=\"ellipsis-vertical-circle-outline\"></ion-icon>\r\n                </ion-button>\r\n                </button>\r\n\r\n\r\n\r\n            </div>\r\n            <span class=\"noticia-source-name \"> {{noticia.source.name}}</span>\r\n        </ion-card-subtitle>\r\n        <ion-card-title (click)=\"lanzarNoticias() \">{{noticia.title}}</ion-card-title>\r\n    </ion-card-header>\r\n    <ion-img *ngIf=\"noticia.urlToImage \" (click)=\"lanzarNoticias() \" [src]=\"noticia.urlToImage \"></ion-img>\r\n    <ion-card-content>\r\n        <p>\r\n            {{noticia.description}}\r\n        </p>\r\n    </ion-card-content>\r\n</ion-card>");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ("<ion-card>\r\n    <ion-card-header>\r\n        <ion-card-subtitle>\r\n            <span class=\"text-primary\">{{indice + 1}}. </span>\r\n            <div class=\"noticias-more\">\r\n                <ion-button (click)=\"lanzarMenu()\" fill = \"clear\">\r\n                    <ion-icon slot=\"icon-only\" name=\"ellipsis-vertical-circle-outline\"></ion-icon>\r\n                </ion-button>\r\n                </button>\r\n\r\n\r\n\r\n            </div>\r\n            <span class=\"noticia-source-name \"> {{noticia.source.name}}</span>\r\n        </ion-card-subtitle>\r\n        <ion-card-title (click)=\"lanzarNoticia() \">{{noticia.title}}</ion-card-title>\r\n    </ion-card-header>\r\n    <ion-img *ngIf=\"noticia.urlToImage \" \r\n            (click)=\"lanzarNoticia() \"\r\n             [src]=\"noticia.urlToImage \">\r\n    </ion-img>\r\n    <ion-card-content>\r\n        <p>\r\n            {{noticia.description}}\r\n        </p>\r\n    </ion-card-content>\r\n</ion-card>");
 
 /***/ }),
 

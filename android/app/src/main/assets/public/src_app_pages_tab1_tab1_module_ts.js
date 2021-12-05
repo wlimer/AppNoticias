@@ -128,7 +128,7 @@ let Tab1Page = class Tab1Page {
             }
             this.noticias.push(...resp.articles);
             if (event) {
-                event.targe.complete();
+                event.target.complete();
             }
         });
     }

@@ -19,7 +19,7 @@ export class NoticiaComponent implements OnInit {
 
  ngOnInit() {}
 
- lanzarNoticias(){
+ lanzarNoticia(){
     const browser = this.iab.create(this.noticia.url,'_system');
 
 

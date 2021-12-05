@@ -39,7 +39,7 @@ export class Tab2Page implements OnInit{
     .subscribe(resp =>{
       this.noticias.push(...resp.articles);
       if(event){
-        event.targe.complete();
+        event.target.complete();
       }
 
 
