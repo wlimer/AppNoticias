@@ -3,6 +3,7 @@ import { Article } from 'src/app/interfaces/interfaces';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { ActionSheetController } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
+import { StorageService } from "../../services/storage.service";
 @Component({
   selector: 'app-noticia',
   templateUrl: './noticia.component.html',
@@ -11,17 +12,22 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 export class NoticiaComponent implements OnInit {
  @Input() noticia: Article;
  @Input() indice: number;
-  constructor(private iab: InAppBrowser,private actionSheetCtrl: ActionSheetController,private socialSharing: SocialSharing) { }
+ constructor(private iab: InAppBrowser,
+                          private actionSheetCtrl: ActionSheetController,
+                          private socialSharing: SocialSharing,
+                          private storageServices:StorageService) { }
 
-  ngOnInit() {}
+ ngOnInit() {}
 
-  lanzarNoticias(){
+ lanzarNoticias(){
     const browser = this.iab.create(this.noticia.url,'_system');
 
 
   }
-  async lanzaMenu(){
+async lanzarMenu(){
+    const noticiaEnFavoritos = this.storageServices.noticiaEnFavoritos(this.noticia);
     const actionSheet = await this.actionSheetCtrl.create({
+      
       buttons: [ {
         text: 'Compartir Noticias',
         icon: 'share',
@@ -31,13 +37,13 @@ export class NoticiaComponent implements OnInit {
             this.noticia.source.name,
               '',
             this.noticia.url
-         );
+         )
         }
       }, {
-        text: 'Agregar Favorito',
-        icon: 'star-outline',
+        text: noticiaEnFavoritos ? 'remover de favoritos' : 'Agregar a Favorito',
+        icon: noticiaEnFavoritos ? 'star' : 'star-outline',
         handler: () => {
-          console.log('Favorite clicked');
+          this.storageServices.saveRemoveNoticia(this.noticia);
         }
       }, {
         text: 'Cancel',
